@@ -1,9 +1,0 @@
-basePath: /
-host: localhost:8080
-info:
-  contact: {}
-  description: Esta é uma API de exemplo em Go usando Swagger
-  title: Minha API Go
-  version: "1.0"
-paths: {}
-swagger: "2.0"
