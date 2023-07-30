@@ -78,3 +78,13 @@ ou
 
     ./time-wise
 ```
+
+# Apendices
+
+## Type_photo
+
+index | description
+--- | ---
+1 | profile
+2 | cover project
+3 | default
