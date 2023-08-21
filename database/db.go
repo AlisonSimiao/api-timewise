@@ -18,7 +18,9 @@ func Connect() error {
 	DB_HOST := os.Getenv("DB_HOST")
 	DB_PORT := os.Getenv("DB_PORT")
 
-	db, err := gorm.Open(postgres.Open("user="+DB_USER+" password="+DB_PASS+" host="+DB_HOST+" port="+DB_PORT+" dbname="+DB_NAME), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open("user="+DB_USER+" password="+DB_PASS+" host="+DB_HOST+" port="+DB_PORT+" dbname="+DB_NAME), &gorm.Config{
+		PrepareStmt: false,
+	})
 
 	if err != nil {
 		fmt.Printf("ERR> database connection failed %s", err)
@@ -33,7 +35,11 @@ func Connect() error {
 // get connection to database with string
 func ConnectWithString(conn string) error {
 	DB_CONNECTION := conn
-	db, err := gorm.Open(postgres.Open("user=postgres password="+DB_CONNECTION+" host=db.yoegocppoqdjwvluebjn.supabase.co port=5432 dbname=postgres"), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open("user=postgres password="+DB_CONNECTION+" host=db.yoegocppoqdjwvluebjn.supabase.co port=5432 dbname=postgres"), &gorm.Config{
+		PrepareStmt:            false,
+		SkipDefaultTransaction: true,
+	})
+
 	if err != nil {
 		fmt.Printf("ERR> database connection failed: %s", DB_CONNECTION)
 		return err
