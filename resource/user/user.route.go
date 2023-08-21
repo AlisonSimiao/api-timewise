@@ -19,6 +19,6 @@ func CreatePrivateRoutes() {
 	api := api.New()
 	uc := NewUserController()
 
-	api.CreateRoute("/user/:id", "GET", uc.FindOne)
-	api.CreateRoute("/user/:id", "PATCH", middleware.Validator(uv.Update), uc.Update)
+	api.CreateRoute("/user", "GET", uc.FindOne)
+	api.CreateRoute("/user", "PATCH", middleware.Validator(uv.Update), uc.Update)
 }
