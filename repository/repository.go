@@ -37,6 +37,15 @@ func (r *Repository) FindOne(condition string, values map[string]interface{}, T 
 	}
 }
 
+func (r *Repository) FindOneWithJoin(selectQuery string, join string, condition string, values map[string]interface{}, T any) {
+
+	result := db.GetDatabase().Table(r.Table).Select(selectQuery).Joins(join).Where(condition, values).Limit(1).First(T)
+
+	if result.Error != nil {
+		T = nil
+	}
+}
+
 func (r *Repository) Raw() *gorm.DB {
 	return db.GetDatabase().Table(r.Table)
 }
