@@ -88,3 +88,18 @@ index | description
 1 | profile
 2 | cover project
 3 | default
+
+## Status
+
+index | description
+--- | ---
+1 | Em Andamento:
+2 | Concluído
+3 | Pendente
+4 | Atrasado
+5 | Cancelada
+6 | Bloqueado
+7 | Reaberto
+8 | Em Revisão
+9 | Aguardando Aprovação
+10| Em Teste
