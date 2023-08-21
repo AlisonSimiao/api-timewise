@@ -1,8 +1,7 @@
 package user
 
 import (
-	"strconv"
-
+	"time-wise/resource/photo"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,19 +13,12 @@ func NewUserController() *UserController {
 }
 
 var userService = NewUserService()
+var photoService = photo.NewPhotoService()
 
 func (uc *UserController) FindOne(c *gin.Context) {
-	userIDString := c.Param("id")
+	userIDString, _ := c.Get("idUser")
 
-	// Converta o parâmetro para int usando strconv.Atoi()
-	idUser, err := strconv.Atoi(userIDString)
-	if err != nil {
-		// Se a conversão falhar, retorne um erro 400 Bad Request
-		c.AbortWithError(400, err)
-		return
-	}
-
-	user, rest_error := userService.findOne(idUser)
+	user, rest_error := userService.findOne(userIDString.(int))
 	if rest_error != nil {
 		c.AbortWithStatusJSON(rest_error.GetStatus(), rest_error.JsonError())
 		return
@@ -35,42 +27,61 @@ func (uc *UserController) FindOne(c *gin.Context) {
 	c.JSON(200, user)
 }
 
-func (uc *UserController) Update(c *gin.Context) {	
-	body, exist := c.Get("body")
+func (uc *UserController) Update(c *gin.Context) {
+	data, exist := c.Get("body")
+	body := make(map[string]string)
+
 	if !exist {
 		c.AbortWithStatusJSON(500, gin.H{"error": "Erro no servidor"})
 		return
 	}
 
-	userIDString := c.Param("id")
-
-	idUser, err := strconv.Atoi(userIDString)
-	if err != nil {
-		c.AbortWithError(400, err)
-		return
+	for key, value := range data.(map[string]interface{}) {
+		if stringValue, ok := value.([]string); ok {
+			body[key] = stringValue[0]
+		} else {
+			body[key] = value.(string)
+		}
 	}
 
-	user, rest_error := userService.update(idUser, body.(map[string]interface{}))
+	userIDString, _ := c.Get("idUser")
+
+	rest_error := userService.update(userIDString.(int), User{
+		Name:     body["name"],
+		Email:    body["email"],
+		Password: body["password"],
+	}, c)
+
 	if rest_error != nil {
 		c.AbortWithStatusJSON(rest_error.GetStatus(), rest_error.JsonError())
 		return
 	}
 
-	c.JSON(200, user)
+	c.JSON(200, body)
 }
 
 func (uc *UserController) Create(c *gin.Context) {
-	body, exist := c.Get("body")
+	data, exist := c.Get("body")
+	body := make(map[string]string)
+
 	if !exist {
 		c.AbortWithStatusJSON(500, gin.H{"error": "Erro no servidor"})
 		return
 	}
 
+	for key, value := range data.(map[string]interface{}) {
+		if stringValue, ok := value.([]string); ok {
+			body[key] = stringValue[0]
+		} else {
+			body[key] = value.(string)
+		}
+	}
+
 	user, rest_error := userService.create(User{
-		Name:     body.(map[string]interface{})["name"].(string),
-		Email:    body.(map[string]interface{})["email"].(string),
-		Password: body.(map[string]interface{})["password"].(string),
-	})
+		Name:     body["name"],
+		Email:    body["email"],
+		Password: body["password"],
+	}, c)
 
 	if rest_error != nil {
 		c.AbortWithStatusJSON(rest_error.GetStatus(), rest_error.JsonError())
@@ -93,6 +104,7 @@ func (uc *UserController) Login(c *gin.Context) {
 		Email:    body.(map[string]interface{})["email"].(string),
 		Password: body.(map[string]interface{})["password"].(string),
 	})
+
 	if rest_error != nil {
 		c.AbortWithStatusJSON(rest_error.GetStatus(), rest_error.JsonError())
 		return
