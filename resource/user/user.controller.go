@@ -81,6 +81,7 @@ func (uc *UserController) Create(c *gin.Context) {
 		Name:     body["name"],
 		Email:    body["email"],
 		Password: body["password"],
+		IdPhoto: 1,
 	}, c)
 
 	if rest_error != nil {
@@ -99,10 +100,11 @@ func (uc *UserController) Login(c *gin.Context) {
 		c.JSON(500, "Erro no servidor")
 		return
 	}
-
+	Body := body.(map[string]interface{})
+	
 	user, rest_error := userService.login(UserLogin{
-		Email:    body.(map[string]interface{})["email"].(string),
-		Password: body.(map[string]interface{})["password"].(string),
+		Email:    Body["email"].(string),
+		Password: Body["password"].(string),
 	})
 
 	if rest_error != nil {

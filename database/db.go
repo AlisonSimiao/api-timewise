@@ -32,16 +32,17 @@ func Connect() error {
 	return nil
 }
 
-// get connection to database with string
-func ConnectWithString(conn string) error {
-	DB_CONNECTION := conn
-	db, err := gorm.Open(postgres.Open("user=postgres password="+DB_CONNECTION+" host=db.yoegocppoqdjwvluebjn.supabase.co port=5432 dbname=postgres"), &gorm.Config{
+
+func ConnectCredential(user, password, host, port, dbname string) error {
+	conn := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s", user, password, host, port, dbname)
+	
+	db, err := gorm.Open(postgres.Open(conn), &gorm.Config{
 		PrepareStmt:            false,
 		SkipDefaultTransaction: true,
 	})
 
 	if err != nil {
-		fmt.Printf("ERR> database connection failed: %s", DB_CONNECTION)
+		fmt.Printf("ERR> database connection failed")
 		return err
 	}
 

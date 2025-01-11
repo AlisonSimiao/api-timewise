@@ -4,7 +4,6 @@ package storage
 //===================
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/cloudinary/cloudinary-go/v2"
@@ -78,7 +77,6 @@ func credentials() *cloudinary.Cloudinary {
 }
 
 func (cs *CloudinaryStorage) UploadImage(src interface{}) error {
-	fmt.Println("upload image")
 	resp, err := cs.cld.Upload.Upload(cs.ctx, src, uploader.UploadParams{
 		PublicID:       cs.publicID,
 		UniqueFilename: api.Bool(cs.uniqueFilename),
@@ -87,7 +85,6 @@ func (cs *CloudinaryStorage) UploadImage(src interface{}) error {
 	})
 
 	if err != nil {
-		fmt.Println("error upload")
 		return err
 	}
 
